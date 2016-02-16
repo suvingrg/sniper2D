@@ -4,7 +4,7 @@ var WIDTH = window.innerWidth || document.documentElement.clientWidth || documen
 var HEIGHT = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
 // creating instance of Phaser.Game
-var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render});
+var game = new Phaser.Game(WIDTH, HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render});
 
 // loading assets
 function preload() {
@@ -17,9 +17,7 @@ function preload() {
 }
 
 var worldScale = 1;
-var background;
 var snipingCam;
-var mask;
 var target;
 var cursors;
 
@@ -29,14 +27,16 @@ function create() {
   // setting game bounds
   game.world.setBounds(0, 0, 1400, 1000);
   // enabling phaser's physics engine
-  game.physics.startSystem(Phaser.Physics.ARCADE);
+  game.physics.startSystem(Phaser.Physics.P2JS);
 
   // adding background to game.world
-  background = game.add.image(0, 0, 'background');
+  game.add.image(0, 0, 'background');
 
   // adding shift key and keyboard cursors to game
   shiftKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
   cursors = game.input.keyboard.createCursorKeys();
+
+  //var c = new Phaser.Circle(150, 150, 300);
 
   // circle that acts as a sniping camera
   snipingCam = game.add.graphics(150, 150);
@@ -53,20 +53,6 @@ function create() {
 	//snipingCam.body.fixedRotation = true;
   game.camera.follow(snipingCam);
 
-  //	A mask is a Graphics object
-  // mask = game.add.graphics(0, 0);
-  //
-  // //	Shapes drawn to the Graphics object must be filled.
-  // mask.beginFill(0xffffff);
-  //
-  // //	Here we'll draw a circle
-  // mask.drawCircle(100, 100, 100);
-  //
-  // //	And apply it to the Sprite
-  // background.mask = mask;
-  // mask.visible = false;
-
-
   //target = game.add.sprite(32, game.world.height - 150, 'target');
   //game.physics.p2.enable(target, true);
   //target.body.gravity.y = 300;
@@ -80,20 +66,6 @@ function create() {
 // phaser function that runs every frame and updates the UI
 function update() {
 
-  if (cursors.left.isDown)
-  {
-    snipingCam.x -= 5;
-  }
-  else if (cursors.right.isDown)
-  {
-    snipingCam.x += 5;
-  }
-  else if (cursors.up.isDown) {
-    snipingCam.y -= 5;
-  }
-  else if (cursors.down.isDown) {
-    snipingCam.y += 5;
-  }
 
 
   // zooming in and out
