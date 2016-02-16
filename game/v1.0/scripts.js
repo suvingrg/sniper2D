@@ -110,12 +110,16 @@ function update(pointer, x, y) {
   }
 
   // firing bullet
-  if (game.input.pointer.isDown(Phaser.Pointer.leftButton) || game.input.keyboard.isDown(Phaser.Keyboard.V)) {
+  if (game.input.keyboard.isDown(Phaser.Keyboard.V)) { // game.input.pointer.isDown(Phaser.Pointer.leftButton) || game.input.keyboard.isDown(Phaser.Keyboard.V
 
+    // play bullet sound
+
+    // checking if the bullet hit the target or not
     if (checkTargetHit(x, y, target)) {
-
+      // remember that the coordinates of crosshair of the are to be tested against the bounds of target bounds in checkTargetHit() function
       target.kill();
     }
+
   }
 
   // zooming in and out
