@@ -87,6 +87,7 @@ function create() {
 
   // adding background to the backgroundGroup
   backgroundGroup.add(background);
+  backgroundGroup.add(target);
 
   // circle that acts as a sniping camera
   snipingCam = game.add.graphics(90, 90);
@@ -290,10 +291,9 @@ function getActualCrosshairY(factor) {
 }
 
 function checkTargetHit(x1, y1, target) {
-  var crosshairCenter = {x: x1, y: y1};
   var targetBounds = target.getBounds();
 
-  return Phaser.Rectangle.containsPoint(targetBounds, crosshairCenter);
+  return targetBounds.contains(x1, y1);
 }
 
 function updateIndicator(x, y) {
