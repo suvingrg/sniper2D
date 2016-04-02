@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Sniper Assassinator 2D</title>
+	<link rel="stylesheet" href="normalize.css" />
+	<script src="phaser.min.js"></script>
+	<script src="states/boot.js"></script>
+	<script src="states/preload.js"></script>
+	<script src="states/menu.js"></script>
+	<script src="states/mission1.js"></script>
+	<script src="states/mission2.js"></script>
+	<script src="states/mission3.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+
+		window.onload = function() {
+
+			var game = new Phaser.Game(1366, 621, Phaser.CANVAS, '');
+
+			// adding the game states
+			game.state.add('boot', sniper2D.boot);
+			game.state.add('preload', sniper2D.preload);
+			game.state.add('menu', sniper2D.menu);
+			game.state.add('mission1', sniper2D.mission1);
+			game.state.add('mission2', sniper2D.mission2);
+			game.state.add('mission3', sniper2D.mission3);
+
+			//	starting boot state
+			game.state.start('boot');
+
+		};
+
+	</script>
+</body>
+</html>
