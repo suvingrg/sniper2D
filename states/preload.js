@@ -15,6 +15,7 @@ sniper2D.preload.prototype = {
 	  this.physics.startSystem(Phaser.Physics.ARCADE);
 
 		//	These are the assets we loaded in Boot.js
+		this.background = this.add.sprite(0, 0, 'preloadBG');
 		this.preloadBar = this.add.sprite(this.world.centerX, this.world.centerY, 'preloadBar');
 		this.preloadBar.anchor.setTo(0.5, 0.5);
 

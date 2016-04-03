@@ -19,7 +19,8 @@ sniper2D.boot.prototype = {
   preload: function () {
 
       //  Here we load the assets required for our preloader (in this case a background and a loading bar)
-      this.load.image('preloadBar', 'assets/preload_bar.png');
+      this.load.image('preloadBG', 'assets/preloader_bg.png');
+      this.load.image('preloadBar', 'assets/loading.png');
 
   },
 
