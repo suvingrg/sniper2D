@@ -11,6 +11,8 @@ sniper2D.mission1 = function (game) {
   this.cursors = null;
   this.crosshairX = null;
   this.crosshairY = null;
+  this.blood = null;
+  this.dyingSound = null;
 
   this.blackBackground = null;
   this.distance = null;
@@ -63,7 +65,7 @@ sniper2D.mission1.prototype = {
     this.blackBackground.height = 621;
     this.missionText = this.add.bitmapText(this.camera.width * 0.5, this.camera.height * 0.5 - 200, 'destroy', 'MISSION 1', 64);
     this.missionText.anchor.setTo(0.5);
-    this.missionText = this.add.bitmapText(this.camera.width * 0.5, this.camera.height * 0.5 - 100, 'gunplay', 'KILL THE GLASSES GUY', 64);
+    this.missionText = this.add.bitmapText(this.camera.width * 0.5, this.camera.height * 0.5 - 100, 'gunplay', 'SHOOT THE GLASSES GUY', 64);
     this.missionText.anchor.setTo(0.5);
 
     this.controls = this.add.group();
@@ -128,6 +130,8 @@ sniper2D.mission1.prototype = {
     this.cursors = null;
     this.crosshairX = null;
     this.crosshairY = null;
+    this.blood.destroy();
+    this.dyingSound.destroy();
 
     this.blackBackground.destroy();
     this.distance = null;
@@ -210,10 +214,12 @@ sniper2D.mission1.prototype = {
     this.music = this.add.audio('wind');
     this.music.play('', 0, 0.7, true);
 
+    this.dyingSound = this.add.audio('dying');
+
     // adding target to this.world
-    this.target = this.add.sprite(100, 370, 'target', 6);
-    this.target.animations.add('move', '', 5, true);
-    this.target.animations.play('move');
+    this.target = this.add.sprite(100, 370, 'target1', 1);
+    this.target.animations.add('turn', '', 0.3, true);
+    this.target.animations.play('turn');
     this.target.scale.set(2);
     // enabling physics in target sprite
     this.physics.arcade.enable(this.target);
@@ -252,6 +258,11 @@ sniper2D.mission1.prototype = {
 
     // adding keyboard cursors to game
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    this.blood = this.add.sprite(0, 0, 'blood');
+    this.blood.anchor.setTo(0.5);
+    this.blood.scale.set(2);
+    this.blood.visible = false;
 
     this.info = this.add.group();
 
@@ -307,15 +318,6 @@ sniper2D.mission1.prototype = {
   },
 
   mainUpdate: function () {
-
-    if (this.target.x <= 100) {
-      this.target.body.velocity.x = 100;
-      this.target.scale.x = +2;
-    }
-    else if (this.target.x >= 200) {
-      this.target.body.velocity.x = -100;
-      this.target.scale.x = -2;
-    }
 
     // crosshair movement
     if (this.cursors.left.isDown)
@@ -430,16 +432,25 @@ sniper2D.mission1.prototype = {
         this.result = this.checkTargetHit(this.crosshairX, this.crosshairY);
         console.log(this.result);
 
-        // disposing the target sprite
-        this.target.kill();
+        this.dyingSound.play('', 0, 1, false);
+
+        this.blood.visible = true;
+        this.blood.x = this.crosshair.x;
+        this.blood.y = this.crosshair.y;
 
         this.debugInfo = false;
-        this.info.visible = true;
-        this.world.scale.set(1);
         this.targetInfo = false;
-        this.distanceText.setText('DEAD');
+        this.world.scale.set(1);
+        this.info.visible = true;
+        this.target.animations.stop('turn');
 
-        this.endMenu.visible = true;
+        this.time.events.add(1700, function () {
+          // disposing the target sprite
+          this.target.kill();
+          this.blood.visible = false;
+          this.distanceText.setText('DEAD');
+          this.endMenu.visible = true;
+        }, this);
 
       }
       else {

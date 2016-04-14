@@ -32,6 +32,7 @@ sniper2D.preload.prototype = {
 		this.load.image('we', 'assets/we.png');
 		this.load.image('spacebar', 'assets/spacebar.png');
 		this.load.image('won', 'assets/won.png');
+		this.load.image('blood', 'assets/blood.png');
 		this.load.spritesheet('quitButton', 'assets/quit_button.png', 167, 70);
 		this.load.spritesheet('playButton', 'assets/play_button.png', 167, 70);
 		this.load.spritesheet('backButton', 'assets/back_button.png', 168, 70);
@@ -43,7 +44,9 @@ sniper2D.preload.prototype = {
 		this.load.image('mission3BG', 'assets/bg_mission3.jpg');
 
 	  // target spritesheet
-	  this.load.atlasJSONArray('target', 'assets/target/target.png', 'assets/target/target.json');
+	  this.load.atlasJSONArray('target1', 'assets/target/target1.png', 'assets/target/target1.json');
+		this.load.atlasJSONArray('target2', 'assets/target/target2.png', 'assets/target/target2.json');
+		this.load.atlasJSONArray('target3', 'assets/target/target3.png', 'assets/target/target3.json');
 
 		this.load.bitmapFont('destroy', 'assets/fonts/destroy.png', 'assets/fonts/destroy.fnt');
 		this.load.bitmapFont('gunplay', 'assets/fonts/gunplay.png', 'assets/fonts/gunplay.fnt');
@@ -52,6 +55,7 @@ sniper2D.preload.prototype = {
 		this.load.audio('wind', 'assets/audio/wind.wav');
 		this.load.audio('helicopter', 'assets/audio/helicopter.wav');
 		this.load.audio('gunshot', 'assets/audio/shot.wav');
+		this.load.audio('dying', 'assets/audio/dying.wav');
 		this.load.audio('bgMusic', 'assets/audio/bg_music.mp3');
 
 	  // debugging for fps
