@@ -1,6 +1,7 @@
 
 sniper2D.mission3 = function (game) {
 
+	//	When a State is added to Phaser it automatically has the following properties set on it, even if they already exist:
   this.worldScale = 1;
   this.background = null;
   this.music = null;
@@ -10,6 +11,8 @@ sniper2D.mission3 = function (game) {
   this.cursors = null;
   this.crosshairX = null;
   this.crosshairY = null;
+  this.blood = null;
+  this.dyingSound = null;
 
   this.blackBackground = null;
   this.distance = null;
@@ -25,20 +28,23 @@ sniper2D.mission3 = function (game) {
   this.targetInfo = null;
   this.missionText = null;
   this.debugInfo = false;
+  this.fadeIn = null;
+  this.fadeIn = null;
 
   this.topBar = null;
   this.bottomBar = null;
   this.distanceInfo = null;
   this.distanceText = null;
 
+
+  // group declarations
   this.backgroundGroup = null;
   this.crosshair = null;
   this.target = null;
   this.endMenu = null;
   this.info = null;
-  this.won = null;
 
-  this.result = null;
+  this.result= null;
 
 };
 
@@ -49,9 +55,9 @@ sniper2D.mission3.prototype = {
     this.blackBackground = this.add.image(0, 0, 'blackBackground');
     this.blackBackground.width = 1366;
     this.blackBackground.height = 621;
-    this.missionText = this.add.bitmapText(this.camera.width * 0.5, this.camera.height * 0.5 - 200, 'destroy', 'FINAL MISSION', 64);
+    this.missionText = this.add.bitmapText(this.camera.width * 0.5, this.camera.height * 0.5 - 200, 'destroy', 'MISSION 3', 64);
     this.missionText.anchor.setTo(0.5);
-    this.missionText = this.add.bitmapText(this.camera.width * 0.5, this.camera.height * 0.5 - 100, 'gunplay', 'SHOOT THE BILLIONAIRE!!!', 64);
+    this.missionText = this.add.bitmapText(this.camera.width * 0.5, this.camera.height * 0.5 - 100, 'gunplay', 'SHOOT THE CEO!!!', 64);
     this.missionText.anchor.setTo(0.5);
 
     this.startText = this.add.bitmapText(this.camera.width * 0.5, this.camera.height * 0.5, 'destroy', 'LOADING', 48);
@@ -74,17 +80,17 @@ sniper2D.mission3.prototype = {
 
 	quitGame: function (pointer) {
 
-	  this.freeUpMem();
+    this.freeUpMem();
 
 		this.state.start('menu');
 
 	},
 
-  restart: function (game) {
+  nextLevel: function () {
 
     this.freeUpMem();
 
-    this.state.start('mission1');
+    this.state.start('mission4');
 
   },
 
@@ -99,6 +105,8 @@ sniper2D.mission3.prototype = {
     this.cursors = null;
     this.crosshairX = null;
     this.crosshairY = null;
+    this.blood.destroy();
+    this.dyingSound.destroy();
 
     this.blackBackground.destroy();
     this.distance = null;
@@ -107,13 +115,14 @@ sniper2D.mission3.prototype = {
 
     this.container.destroy();
     this.missionComplete.destroy();
-    this.quitButton.destroy();
-    this.restartButton.destroy();
+    this.backButton.destroy();
+    this.continueButton.destroy();
 
-    this.gameConfig = false;
+    this.gameConfig = null;
     this.targetInfo = null;
     this.missionText.destroy();
     this.debugInfo = null;
+    this.fadeIn = null;
 
     this.topBar.destroy();
     this.bottomBar.destroy();
@@ -125,9 +134,9 @@ sniper2D.mission3.prototype = {
     this.target.destroy();
     this.endMenu.destroy();
     this.info.destroy();
-    this.won.destroy();
 
     this.result = null;
+    this.loaded = false;
 
   },
 
@@ -135,8 +144,8 @@ sniper2D.mission3.prototype = {
 
     if (this.debugInfo) {
       game.debug.text(this.time.fps || '--', 2, 20, "#ff0004", 'Verdana');
-      game.debug.text('FINAL MISSION', this.camera.width * 0.5 - 150, 50, "#00ff00", ' 48px Verdana');
-      game.debug.text('TARGET INFO : ALIVE', this.camera.width * 0.5 - 150, this.camera.height - 20, "#00ff00", ' 32px Verdana');
+      game.debug.text('MISSION 3', this.camera.width * 0.5 - 150, 50, "#0000ff", ' 48px Verdana');
+      game.debug.text('TARGET INFO : ' + Math.round(Math.abs(this.distance / 4)) + this.direction, this.camera.width * 0.5 - 200, this.camera.height - 20, "#0000ff", ' 32px Verdana');
     }
 
   },
@@ -159,11 +168,12 @@ sniper2D.mission3.prototype = {
 
     this.missionText = null;
 
-    this.world.setBounds(0, 0, 2719, 1099);
+    // setting up world bounds
+    this.world.setBounds(0, 0, 3634, 1757);
     this.world.scale.set(1);
 
 	  // adding background to this.world
-	  this.background = this.add.image(0, 0, 'mission3BG');
+	  this.background = this.add.image(0, 0, 'mission2BG');
 
 	  // creating groups
 	  this.backgroundGroup = this.add.group();
@@ -172,11 +182,13 @@ sniper2D.mission3.prototype = {
     this.music = this.add.audio('helicopter');
     this.music.play('', 0, 1, true);
 
+    this.dyingSound = this.add.audio('dying');
+
 	  // adding target to this.world
-	  this.target = this.add.sprite(1542, 59, 'target', 6);
-	  this.target.animations.add('move', '', 5, true);
-	  // this.target.animations.play('move');
-    this.target.scale.set(0.2);
+	  this.target = this.add.sprite(2072, 154, 'target3', 1);
+    this.target.animations.add('turn', '', 0.7, true);
+    this.target.animations.play('turn');
+    this.target.scale.set(0.5);
 	  // enabling physics in target sprite
 	  this.physics.arcade.enable(this.target);
 
@@ -212,8 +224,12 @@ sniper2D.mission3.prototype = {
 	  // following the crosshair
 	  this.camera.follow(this.crosshair);
 
-    // adding keyboard cursors to game
+	  // adding keyboard cursors to game
 	  this.cursors = this.input.keyboard.createCursorKeys();
+
+    this.blood = this.add.sprite(0, 0, 'blood');
+    this.blood.anchor.setTo(0.5);
+    this.blood.visible = false;
 
     this.info = this.add.group();
 
@@ -222,15 +238,15 @@ sniper2D.mission3.prototype = {
     this.topBar.drawRect(0, 0, this.camera.width, 40);
     this.topBar.endFill();
 
-    this.missionText = this.add.bitmapText(this.camera.width * 0.5, 20, 'destroy', 'FINAL MISSION', 18);
+    this.missionText = this.add.bitmapText(this.camera.width * 0.5, 20, 'destroy', 'MISSION 3', 18);
     this.missionText.anchor.setTo(0.5);
 
     this.bottomBar = this.add.graphics(0, 0);
     this.bottomBar.beginFill(0x252525, 1);
     this.bottomBar.drawRect(0, this.camera.height - 70, this.camera.width, 70);
     this.bottomBar.endFill();
-    this.distanceInfo = this.add.bitmapText(this.camera.width * 0.5 - 200, this.camera.height - 50, 'gunplay', 'TARGET INFO : ', 32);
-    this.distanceText = this.add.bitmapText(this.camera.width * 0.5 + 20, this.camera.height - 50, 'gunplay', 'ALIVE', 32);
+    this.distanceInfo = this.add.bitmapText(this.camera.width * 0.5 - 210, this.camera.height - 50, 'gunplay', 'TARGET INFO : ', 32);
+    this.distanceText = this.add.bitmapText(this.camera.width * 0.5 + 10, this.camera.height - 50, 'gunplay', '', 32);
 
     this.info.add(this.topBar);
     this.info.add(this.missionText);
@@ -239,7 +255,6 @@ sniper2D.mission3.prototype = {
     this.info.add(this.distanceText);
     this.info.fixedToCamera = true;
 
-
     this.endMenu = this.add.group();
 
     this.container = this.game.add.graphics(0, 0);
@@ -247,24 +262,19 @@ sniper2D.mission3.prototype = {
     this.container.drawRect(0, 0,this.world.width, this.world.height);
     this.container.endFill();
 
-    this.missionComplete = this.add.sprite(this.camera.width * 0.5, 100, 'missionComplete');
+    this.missionComplete = this.add.sprite(this.camera.width * 0.5, this.camera.height * 0.5 - 150, 'missionComplete');
     this.missionComplete.anchor.setTo(0.5);
 
-    this.won = this.add.sprite(this.camera.width * 0.5, this.camera.height * 0.5, 'won');
-    this.won.anchor.setTo(0.5);
-    this.won.scale.setTo(0.8);
+    this.backButton = this.add.button(this.camera.width * 0.5 - 150, this.camera.height * 0.5 + 50, 'backButton', this.quitGame, this, 0, 1, 2);
+		this.backButton.anchor.setTo(0.5);
 
-    this.quitButton = this.add.button(this.camera.width * 0.5 - 150, this.camera.height * 0.5 + 150, 'quitButton', this.quitGame, this, 0, 1, 2);
-		this.quitButton.anchor.setTo(0.5);
-
-    this.restartButton = this.add.button(this.camera.width * 0.5 + 100, this.camera.height * 0.5 + 150, 'restartButton', this.restart, this, 0, 1, 2);
-		this.restartButton.anchor.setTo(0.5);
+    this.continueButton = this.add.button(this.camera.width * 0.5 + 100, this.camera.height * 0.5 + 50, 'continueButton', this.nextLevel, this, 0, 1, 2);
+		this.continueButton.anchor.setTo(0.5);
 
     this.endMenu.add(this.container);
     this.endMenu.add(this.missionComplete);
-    this.endMenu.add(this.won);
-    this.endMenu.add(this.quitButton);
-    this.endMenu.add(this.restartButton);
+    this.endMenu.add(this.backButton);
+    this.endMenu.add(this.continueButton);
     this.endMenu.fixedToCamera = true;
     this.endMenu.visible = false;
 
@@ -274,13 +284,6 @@ sniper2D.mission3.prototype = {
   },
 
   mainUpdate: function () {
-
-    if (this.target.x <= 1542) {
-      this.target.body.velocity.x = 25;
-    }
-    else if (this.target.x >= 1552) {
-      this.target.body.velocity.x = -25;
-    }
 
     // crosshair movement
     if (this.cursors.left.isDown)
@@ -299,7 +302,7 @@ sniper2D.mission3.prototype = {
     }
 
     // firing bullet
-    if (this.game.input.activePointer.leftButton.isDown || this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
 
       // play bullet sound
       this.gunshot.play();
@@ -311,50 +314,38 @@ sniper2D.mission3.prototype = {
         this.crosshairY = this.getActualCrosshairY(0);
 
         console.log(this.crosshairX, this.crosshairY);
-        if (this.crosshairX >= 1542 && this.crosshairX <= 1546) {
-          this.crosshairX -= 859;
+        if (this.crosshairX >= 2072 && this.crosshairX <= 2081) {
+          this.crosshairX -= 1389;
         }
         console.log(this.crosshairX, this.crosshairY);
 
-        if (this.crosshairX >= 1547 && this.crosshairX <= 1551) {
-          this.crosshairX -= 869;
-        }
-        console.log(this.crosshairX, this.crosshairY);
-
-        if (this.crosshairX >= 1552 && this.crosshairX <= 1557) {
-          this.crosshairX -= 875;
-        }
-        console.log(this.crosshairX, this.crosshairY);
-
-        if (this.crosshairX >= 1558 && this.crosshairX <= 1562) {
-          this.crosshairX -= 881;
+        if (this.crosshairX >= 2082 && this.crosshairX <= 2114) {
+          this.crosshairX -= 1408;
         }
         console.log(this.crosshairX, this.crosshairY);
 
       }
       else if (this.worldScale > 1.3 && this.worldScale <= 1.4) {
 
-        this.crosshairX = this.getActualCrosshairX(0);
-        this.crosshairY = this.getActualCrosshairY(42);
+        this.crosshairX = this.getActualCrosshairX(10);
+        this.crosshairY = this.getActualCrosshairY(65);
 
         console.log(this.crosshairX, this.crosshairY);
-        if (this.crosshairX >= 1542 && this.crosshairX <= 1546) {
-          this.crosshairX -= 858;
+        if (this.crosshairX >= 2082 && this.crosshairX <= 2092) {
+          this.crosshairX -= 1398;
         }
         console.log(this.crosshairX, this.crosshairY);
 
-        if (this.crosshairX >= 1547 && this.crosshairX <= 1551) {
-          this.crosshairX -= 870;
+        if (this.crosshairX >= 2093 && this.crosshairX <= 2100) {
+          this.crosshairX -= 1417;
         }
         console.log(this.crosshairX, this.crosshairY);
-
-        if (this.crosshairX >= 1552 && this.crosshairX <= 1556) {
-          this.crosshairX -= 876;
+        if (this.crosshairY < 219) {
+          this.crosshairY -= 100;
         }
-        console.log(this.crosshairX, this.crosshairY);
 
-        if (this.crosshairX >= 1558 && this.crosshairX <= 1562) {
-          this.crosshairX -= 883;
+        if (this.crosshairY > 249) {
+          this.crosshairY += 100;
         }
         console.log(this.crosshairX, this.crosshairY);
 
@@ -366,18 +357,25 @@ sniper2D.mission3.prototype = {
         this.result = this.checkTargetHit(this.crosshairX, this.crosshairY);
         console.log(this.result);
 
-        this.target.kill();
+        this.dyingSound.play('', 0, 1, false);
 
-        this.music.destroy();
-        this.music = this.add.audio('bgMusic');
-        this.music.play('', 0, 1, true);
+        this.blood.visible = true;
+        this.blood.x = this.crosshair.x;
+        this.blood.y = this.crosshair.y;
+
         this.debugInfo = false;
-        this.info.visible = true;
-        this.world.scale.set(1);
         this.targetInfo = false;
-        this.distanceText.setText('DEAD');
+        this.world.scale.set(1);
+        this.info.visible = true;
+        this.target.animations.stop('turn');
 
-        this.endMenu.visible = true;
+        this.time.events.add(1700, function () {
+          // disposing the target sprite
+          this.target.kill();
+          this.blood.visible = false;
+          this.distanceText.setText('DEAD');
+          this.endMenu.visible = true;
+        }, this);
 
       }
       else {
@@ -392,24 +390,33 @@ sniper2D.mission3.prototype = {
 
     if (this.targetInfo) {
 
+      this.distance = this.target.x - this.crosshair.x;
+      if (this.distance > 0) {
+        this.distanceText.setText(Math.round(Math.abs(this.distance / 4)) + 'mm RIGHT');
+        this.direction = 'mm RIGHT';
+      }
+      else {
+        this.distanceText.setText(Math.round(Math.abs(this.distance / 4)) + 'mm LEFT');
+        this.direction = 'mm LEFT';
+      }
+
       // zooming in and out
       if (this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
-        this.worldScale += 0.1;
-        this.debugInfo = true;
-        this.info.visible = false;
+          this.worldScale += 0.1;
+          this.debugInfo = true;
+          this.info.visible = false;
       }
       else if (this.game.input.keyboard.isDown(Phaser.Keyboard.E)) {
-        this.worldScale -= 0.1;
-        this.debugInfo = false;
-        this.info.visible = true;
+          this.worldScale -= 0.1;
+          this.debugInfo = false;
+          this.info.visible = true;
       }
 
-      // setting minimum and maximum scale value
+      // set a minimum and maximum scale value
       this.worldScale = Phaser.Math.clamp(this.worldScale, 1, 1.4);
 
-      // updating world scale
+      // set our world scale as needed
       this.world.scale.set(this.worldScale);
-
     }
 
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.T)) {
@@ -424,9 +431,6 @@ sniper2D.mission3.prototype = {
     }
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.U)) {
         console.log(this.camera.width, this.camera.height);
-    }
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.O)) {
-        this.crosshair.x -= 20;
     }
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.P)) {
         this.crosshair.x += 20;
