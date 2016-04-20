@@ -75,6 +75,14 @@ function create() {
 
   game.input.addMoveCallback(moveCam, this);
 
+  button = game.add.button(game.world.centerX, game.world.centerY, 'button', function() {  
+  	// open in the same window (like clicking a link)
+  	window.location.href = "http://goo.gl/forms/DCJWW8gzlt";
+
+  	// open in a new window instead (this will likely be blocked by popup blockers though)
+  	// window.open("http://www.google.com", "_blank");
+  }, this);
+
 }
 
 // phaser function that runs every frame and updates the UI

@@ -20,8 +20,9 @@ sniper2D.mission4 = function (game) {
 
   this.container = null;
   this.missionComplete = null;
-  this.backButton = null;
-  this.continueButton = null;
+  this.quitButton = null;
+  this.restartButton = null;
+  this.surveyButton = null;
 
   this.gameConfig = false;
   this.targetInfo = null;
@@ -114,6 +115,7 @@ sniper2D.mission4.prototype = {
     this.missionComplete.destroy();
     this.quitButton.destroy();
     this.restartButton.destroy();
+    this.surveyButton.destroy();
 
     this.gameConfig = false;
     this.targetInfo = null;
@@ -256,24 +258,32 @@ sniper2D.mission4.prototype = {
     this.container.drawRect(0, 0,this.world.width, this.world.height);
     this.container.endFill();
 
-    this.missionComplete = this.add.sprite(this.camera.width * 0.5, 100, 'missionComplete');
+    this.missionComplete = this.add.sprite(this.camera.width * 0.5, 70, 'missionComplete');
     this.missionComplete.anchor.setTo(0.5);
 
-    this.won = this.add.sprite(this.camera.width * 0.5, this.camera.height * 0.5, 'won');
+    this.won = this.add.sprite(this.camera.width * 0.5, this.camera.height * 0.5 - 50, 'won');
     this.won.anchor.setTo(0.5);
     this.won.scale.setTo(0.8);
 
-    this.quitButton = this.add.button(this.camera.width * 0.5 - 150, this.camera.height * 0.5 + 150, 'quitButton', this.quitGame, this, 0, 1, 2);
+    this.quitButton = this.add.button(this.camera.width * 0.5 - 150, this.camera.height * 0.5 + 100, 'quitButton', this.quitGame, this, 0, 1, 2);
 		this.quitButton.anchor.setTo(0.5);
 
-    this.restartButton = this.add.button(this.camera.width * 0.5 + 100, this.camera.height * 0.5 + 150, 'restartButton', this.restart, this, 0, 1, 2);
+    this.restartButton = this.add.button(this.camera.width * 0.5 + 100, this.camera.height * 0.5 + 100, 'restartButton', this.restart, this, 0, 1, 2);
 		this.restartButton.anchor.setTo(0.5);
+
+    this.surveyButton = this.add.button(this.camera.width * 0.5 - 30, this.camera.height * 0.5 + 200, 'surveyButton', function() {
+
+      window.location.href = 'http://goo.gl/forms/DCJWW8gzlt';
+
+    }, this, 1, 0, 0);
+    this.surveyButton.anchor.setTo(0.5);
 
     this.endMenu.add(this.container);
     this.endMenu.add(this.missionComplete);
     this.endMenu.add(this.won);
     this.endMenu.add(this.quitButton);
     this.endMenu.add(this.restartButton);
+    this.endMenu.add(this.surveyButton);
     this.endMenu.fixedToCamera = true;
     this.endMenu.visible = false;
 
@@ -310,7 +320,7 @@ sniper2D.mission4.prototype = {
     }
 
     // firing bullet
-    if (this.game.input.activePointer.leftButton.isDown || this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
 
       // play bullet sound
       this.gunshot.play();

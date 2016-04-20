@@ -38,6 +38,7 @@ sniper2D.preload.prototype = {
 		this.load.spritesheet('backButton', 'assets/back_button.png', 168, 70);
 		this.load.spritesheet('continueButton', 'assets/continue_button.png', 268, 70);
 		this.load.spritesheet('restartButton', 'assets/restart_button.png', 268, 70);
+		this.load.spritesheet('surveyButton', 'assets/survey_button.png', 964, 70);
 		this.load.image('blackBackground', 'assets/black_background.png');
 		this.load.image('mission1BG', 'assets/bg_mission1.jpg');
 		this.load.image('mission2BG', 'assets/bg_mission2.jpg');

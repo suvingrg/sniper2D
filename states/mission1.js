@@ -176,7 +176,7 @@ sniper2D.mission1.prototype = {
   render: function (game) {
 
     if (this.debugInfo) {
-      game.debug.text(this.time.fps || '--', 2, 20, "#0000ff", '48px Verdana');
+      game.debug.text(this.time.fps || '--', 2, 20, "#0000ff", '32px Verdana');
       game.debug.text('MISSION 1', this.camera.width * 0.5 - 150, 50, "#0000ff", ' 48px Verdana');
       game.debug.text('TARGET INFO : ' + Math.round(Math.abs(this.distance / 4)) + this.direction, this.camera.width * 0.5 - 200, this.camera.height - 20, "#0000ff", ' 32px Verdana');
     }
@@ -246,8 +246,8 @@ sniper2D.mission1.prototype = {
     // drawing red border line
     this.snipingCam.lineStyle(3, 0x00ff00);
     this.snipingCam.beginFill(0x00ff00, 0.2);
-    this.snipingCam.drawCircle(0, 0, 32);
-    this.snipingCam.drawCircle(0, 0, 0.15);
+    this.snipingCam.drawCircle(0, 0, 70);
+    this.snipingCam.drawCircle(0, 0, 3);
     this.snipingCam.endFill();
 
     // adding snipingCam to crosshair group
