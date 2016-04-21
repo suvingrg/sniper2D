@@ -211,11 +211,10 @@ sniper2D.mission3.prototype = {
 
 	  // circle that acts as a sniping camera
 	  this.snipingCam = this.add.graphics(0, 0);
-	  // drawing red border line
-	  this.snipingCam.lineStyle(3, 0xff0004);
-	  this.snipingCam.beginFill(0xff0000, 0.2);
-	  this.snipingCam.drawCircle(0, 0, 170);
-	  this.snipingCam.drawCircle(0, 0, 0.15);
+    this.snipingCam.lineStyle(3, 0xff0000);
+    this.snipingCam.beginFill(0xff0000, 0.2);
+    this.snipingCam.drawCircle(0, 0, 70);
+    this.snipingCam.drawCircle(0, 0, 3);
 	  this.snipingCam.endFill();
 
 	  // adding snipingCam to crosshair group
@@ -288,17 +287,17 @@ sniper2D.mission3.prototype = {
     // crosshair movement
     if (this.cursors.left.isDown)
     {
-      this.crosshair.x -= 1;
+      this.crosshair.x -= 15;
     }
     else if (this.cursors.right.isDown)
     {
-      this.crosshair.x += 1;
+      this.crosshair.x += 15;
     }
     else if (this.cursors.up.isDown) {
-      this.crosshair.y -= 1;
+      this.crosshair.y -= 15;
     }
     else if (this.cursors.down.isDown) {
-      this.crosshair.y += 1;
+      this.crosshair.y += 15;
     }
 
     // firing bullet
